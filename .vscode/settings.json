@@ -24,6 +24,15 @@
     "files.exclude": {
         "**/.ruff_cache": true,
         "**/.mypy_cache": true,
-        "**/__pycache__": true
-    }
+        "**/__pycache__": true,
+        "**/.coverage": true,
+        "**/.pytest_cache": true
+    },
+
+    // Configure pytest for VS Code
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

@@ -19,8 +19,8 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "sudo chown -R $(whoami): /commandhistory",
-	
+    "postCreateCommand": "chmod +x .devcontainer/setup_devcontainer.sh && .devcontainer/setup_devcontainer.sh",
+		
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {

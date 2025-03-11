@@ -23,6 +23,7 @@
 
     "files.exclude": {
         "**/.ruff_cache": true,
-        "**/.mypy_cache": true
+        "**/.mypy_cache": true,
+        "**/__pycache__": true
     }
 }

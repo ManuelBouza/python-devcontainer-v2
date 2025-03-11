@@ -28,7 +28,8 @@
 				"tfgzs.diff-clipboard",
 				"mhutchie.git-graph",
 				"charliermarsh.ruff",
-				"ms-python.mypy-type-checker"
+				"ms-python.mypy-type-checker",
+				"gnramsay.create-python-module"
 			],
 
 			"settings": {

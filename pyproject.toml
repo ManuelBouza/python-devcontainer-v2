@@ -18,3 +18,8 @@ select = [
     "Q",  # Quote consistency
     "UP",  # Code modernization (Pyupgrade)
 ]
+
+per-file-ignores = { "tests/*" = ["S101"] }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

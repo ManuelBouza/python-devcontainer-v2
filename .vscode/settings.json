@@ -8,5 +8,20 @@
 
     // Configure bracket pair colorization
     "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-    "editor.guides.bracketPairs": true
+    "editor.guides.bracketPairs": true,
+
+    // Sets a visual guideline
+    "editor.rulers": [120],
+
+    // Automatically fix Ruff errors on save
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+
+    "files.exclude": {
+        "**/.ruff_cache": true
+    }
 }

@@ -3,3 +3,18 @@ name = "Python_3"
 version = "0.4.0"
 description = "Python devcontainer v2"
 requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",  # General errors
+    "F",  # Flake8-based errors
+    "W",  # Warnings
+    "B",  # Bug-prone patterns (Bugbear)
+    "S",  # Security-related rules
+    "Q",  # Quote consistency
+    "UP",  # Code modernization (Pyupgrade)
+]

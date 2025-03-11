@@ -18,5 +18,11 @@ chmod +x github_utility/git-develop-to-main.sh
 echo "✔️ Granting execute permission to git-feature-to-develop.sh"
 echo ""
 
+echo "🐍 Installing Python dependencies..."
+chmod +x .devcontainer/install_python_dependencies.sh
+echo "✔️ Granting execute permission to install_python_dependencies.sh..."
+.devcontainer/install_python_dependencies.sh
+echo ""
+
 echo "🎉 DevContainer setup complete!"
 echo ""

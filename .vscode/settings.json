@@ -8,5 +8,9 @@
 
     // Configure bracket pair colorization
     "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-    "editor.guides.bracketPairs": true
+    "editor.guides.bracketPairs": true,
+
+    // Sets a visual guideline
+    "editor.rulers": [120]
+
 }

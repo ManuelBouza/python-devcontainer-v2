@@ -26,7 +26,8 @@
 		"vscode": {
 			"extensions": [
 				"tfgzs.diff-clipboard",
-				"mhutchie.git-graph"
+				"mhutchie.git-graph",
+				"charliermarsh.ruff"
 			],
 
 			"settings": {

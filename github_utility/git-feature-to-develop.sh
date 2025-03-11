@@ -1,59 +1,59 @@
 #!/bin/bash
 
-# 📌 Capturando la rama actual
+# 📌 Capturing the current branch
 current_branch=$(git branch --show-current)
 
 if [[ $current_branch != feature/* ]]; then
-    echo "❌ Error: Debes estar en una rama 'feature/*' para ejecutar este script."
+    echo "❌ Error: You must be on a 'feature/*' branch to run this script."
     exit 1
 fi
 
-# 📌 Comprobar si hay cambios pendientes (no ejecuta si hay archivos sin commit)
+# 📌 Check for pending changes (does not run if there are uncommitted files)
 if [[ -n $(git status --porcelain) ]]; then
-    echo "❌ Error: Hay cambios pendientes. Por favor, haz commit o stash antes de continuar."
+    echo "❌ Error: There are pending changes. Please commit or stash them before proceeding."
     exit 1
 fi
 
-# 🛠 Confirmación del usuario antes de continuar
-echo -n "🔔 ¿Deseas continuar con la integración de la rama '$current_branch'? (S/n): "
+# 🛠 User confirmation before proceeding
+echo -n "🔔 Do you want to continue integrating the branch '$current_branch'? (y/N): "
 read -r continue_integration
-if [[ "$continue_integration" != "" && "$continue_integration" != "s" ]]; then
-    echo "⚠️ Operación cancelada por el usuario. Haciendo salida..."
+if [[ "$continue_integration" != "" && "$continue_integration" != "y" ]]; then
+    echo "⚠️ Operation canceled by the user. Exiting..."
     exit 1
 fi
 echo ""
 
-# 🛠 Extrayendo el nombre de la rama actual
+# 🛠 Extracting the feature branch name
 current_branch=$(git branch --show-current)
 feature_name=${current_branch#feature/}
 
-# Cambiando a rama develop
-echo "🔄 Cambiando a rama 'develop'..."
+# Switching to develop branch
+echo "🔄 Switching to 'develop' branch..."
 git switch develop
 echo ""
 
-# 🔄 Haciendo merge de rama feature en develop
-echo "🔄 Haciendo merge de '$current_branch' en 'develop'..."
+# 🔄 Merging feature branch into develop
+echo "🔄 Merging '$current_branch' into 'develop'..."
 git merge "$current_branch" --no-ff -m "Merge '$current_branch' into develop"
 echo ""
 
-# 🚀 Push a la rama develop
-echo "🚀 Haciendo push a 'origin/develop'..."
+# 🚀 Push to develop branch
+echo "🚀 Pushing to 'origin/develop'..."
 git push origin develop
 if [[ $? -ne 0 ]]; then
-    echo "❌ Error al hacer push a 'origin/develop'."
+    echo "❌ Error pushing to 'origin/develop'."
     exit 1
 fi
 echo ""
 
-# 🗑️ Eliminando rama local y remota
-echo "🗑️ Eliminando rama local '$current_branch'..."
+# 🗑️ Deleting local and remote branches
+echo "🗑️ Deleting local branch '$current_branch'..."
 git branch -d "$current_branch"
 echo ""
 
-# 🗑️ Eliminar la rama remota
-echo "🗑️ Eliminando rama remota 'origin/$current_branch'..."
+# 🗑️ Deleting the remote branch
+echo "🗑️ Deleting remote branch 'origin/$current_branch'..."
 git push origin --delete "$current_branch"
 echo ""
 
-echo "✅ ¡Proceso completado exitosamente!"
+echo "✅ Process completed successfully!"

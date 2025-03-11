@@ -27,7 +27,9 @@
 			"extensions": [
 				"tfgzs.diff-clipboard",
 				"mhutchie.git-graph",
-				"charliermarsh.ruff"
+				"charliermarsh.ruff",
+				"ms-python.mypy-type-checker",
+				"gnramsay.create-python-module"
 			],
 
 			"settings": {

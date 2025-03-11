@@ -1,6 +1,6 @@
 [project]
 name = "Python_3"
-version = "0.5.0"
+version = "0.6.0"
 description = "Python devcontainer v2"
 requires-python = ">=3.12"
 

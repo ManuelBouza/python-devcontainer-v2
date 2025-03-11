@@ -51,9 +51,14 @@ echo "🗑️ Deleting local branch '$current_branch'..."
 git branch -d "$current_branch"
 echo ""
 
-# 🗑️ Deleting the remote branch
-echo "🗑️ Deleting remote branch 'origin/$current_branch'..."
-git push origin --delete "$current_branch"
+# 🗑️ Check if the remote branch exists before deleting it
+if git ls-remote --exit-code --heads origin "$current_branch" &>/dev/null; then
+    echo "🗑️ Deleting remote branch 'origin/$current_branch'..."
+    git push origin --delete "$current_branch"
+    echo "✅ Remote branch '$current_branch' deleted successfully!"
+else
+    echo "⚠️ Remote branch '$current_branch' does not exist. Skipping deletion."
+fi
 echo ""
 
 echo "✅ Process completed successfully!"

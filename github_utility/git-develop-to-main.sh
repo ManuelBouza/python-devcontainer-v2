@@ -80,6 +80,7 @@ if [[ "$increase_version" == "s" ]]; then
 
     new_version="$major.$minor.$patch"
 
+    echo ""
     echo "🔼 Actualizando versión: $current_version ➡️ $new_version"
     sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" pyproject.toml
 
@@ -119,6 +120,10 @@ else
         echo "⚠️ No se encontró ningún tag para mover."
     fi
 fi
+echo ""
+
+echo "🔄 Volviendo a la rama 'develop'..."
+git switch develop
 echo ""
 
 echo "✅ ¡Proceso completado exitosamente!"

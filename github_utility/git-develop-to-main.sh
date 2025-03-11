@@ -1,91 +1,101 @@
 #!/bin/bash
 
-# 📌 Capturando la rama actual
+# 📌 Capturing the current branch
 current_branch=$(git branch --show-current)
 
 if [[ $current_branch != "develop" ]]; then
-    echo "❌ Error: Debes estar en la rama 'develop' para ejecutar este script."
+    echo "❌ Error: You must be on the 'develop' branch to run this script."
     exit 1
 fi
 
-# 📌 Comprobar si hay cambios pendientes (no ejecuta si hay archivos sin commit)
+# 📌 Check for pending changes (does not run if there are uncommitted files)
 if [[ -n $(git status --porcelain) ]]; then
-    echo "❌ Error: Hay cambios pendientes. Por favor, haz commit o stash antes de continuar."
+    echo "❌ Error: There are pending changes. Please commit or stash them before proceeding."
     exit 1
 fi
 
-# 🛠 Confirmación del usuario antes de continuar
-echo -n "🔔 ¿Deseas continuar con la integración de 'develop' en 'main'? (S/n): "
+# 🛠 User confirmation before proceeding
+echo -n "🔔 Do you want to continue integrating 'develop' into 'main'? (y/N): "
 read -r continue_integration
-if [[ "$continue_integration" != "" && "$continue_integration" != "s" ]]; then
-    echo "⚠️ Operación cancelada por el usuario. Saliendo..."
+if [[ "$continue_integration" != "" && "$continue_integration" != "y" ]]; then
+    echo "⚠️ Operation canceled by the user. Exiting..."
     exit 1
 fi
 
-echo "🔄 Cambiando a la rama 'main'..."
+echo "🔄 Switching to 'main' branch..."
 git switch main
 echo ""
 
-# 🔄 Haciendo merge de develop en main
-echo "🔄 Haciendo merge de 'develop' en 'main'..."
+# 🔄 Merging develop into main
+echo "🔄 Merging 'develop' into 'main'..."
 git merge develop --no-ff -m "Merge 'develop' into main"
 echo ""
 
-# 🚀 Push a la rama main
-echo "🚀 Haciendo push a 'origin/main'..."
+# 🚀 Push to main branch
+echo "🚀 Pushing to 'origin/main'..."
 git push origin main
 if [[ $? -ne 0 ]]; then
-    echo "❌ Error al hacer push a 'origin/main'."
+    echo "❌ Error pushing to 'origin/main'."
     exit 1
 fi
 echo ""
 
-# 📌 Incrementar la versión y crear tag (opcional)
-echo ""
-echo -n "🔔 ¿Deseas incrementar la versión y crear un nuevo tag? (s/N): "
-read -r increase_version
-if [[ "$increase_version" == "s" ]]; then
-    # Obtener la versión actual del archivo pyproject.toml
-    current_version=$(grep -oP '(?<=version = \")([0-9]+)\.([0-9]+)\.([0-9]+)' pyproject.toml)
+# Get the current version from pyproject.toml
+current_version=$(grep -oP '(?<=version = ")([0-9]+)\.([0-9]+)\.([0-9]+)' pyproject.toml)
 
+echo ""
+echo -n "🔔 The current version is '$current_version'. Do you want to increment it and create a new tag? (y/N): "
+read -r increase_version
+
+if [[ "$increase_version" == "y" ]]; then
     IFS='.' read -r major minor patch <<<"$current_version"
 
-    # Preguntar qué tipo de incremento se desea
-    echo ""
-    echo "📌 Selecciona el tipo de incremento:"
-    echo "1) Major (X.0.0)"
-    echo "2) Minor ($major.X.0)"
-    echo "3) Patch ($major.$minor.X)"
-    echo -n "🔢 Opción (1/2/3): "
-    read -r option
+    while true; do
+        # Ask which type of version increment is desired
+        echo ""
+        echo "📌 Select the type of increment:"
+        echo "1) Major ($((major + 1)).0.0)"
+        echo "2) Minor ($major.$((minor + 1)).0)"
+        echo "3) Patch ($major.$minor.$((patch + 1)))"
+        echo "4) ❌ Cancel"
+        echo ""
+        echo -n "🔢 Option (1/2/3/4): "
+        read -r option
 
-    case $option in
-        1)
-            ((major++))
-            minor=0
-            patch=0
-            ;;
-        2)
-            ((minor++))
-            patch=0
-            ;;
-        3)
-            ((patch++))
-            ;;
-        *)
-            echo "⚠️ Opción no válida. No se actualizará la versión."
-            exit 1
-            ;;
-    esac
+        case $option in
+            1)
+                ((major++))
+                minor=0
+                patch=0
+                break
+                ;;
+            2)
+                ((minor++))
+                patch=0
+                break
+                ;;
+            3)
+                ((patch++))
+                break
+                ;;
+            4)
+                echo "❌ Operation canceled."
+                exit 0
+                ;;
+            *)
+                echo "⚠️ Invalid option. Please try again."
+                ;;
+        esac
+    done
 
     new_version="$major.$minor.$patch"
 
     echo ""
-    echo "🔼 Actualizando versión: $current_version ➡️ $new_version"
+    echo "🔼 Updating version: $current_version ➡️ $new_version"
     sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" pyproject.toml
 
     git add pyproject.toml
-    git commit -m "Incrementar versión a $new_version"
+    git commit -m "Increment version to $new_version"
 
     new_tag="v$new_version"
     git tag "$new_tag"
@@ -93,37 +103,37 @@ if [[ "$increase_version" == "s" ]]; then
     git push origin main
     git push origin "$new_tag"
 
-    echo "✅ ¡Nueva versión creada y publicada: $new_tag!"
+    echo "✅ New version created and published: $new_tag!"
 else
-    echo "⚠️ La versión no fue incrementada."
+    echo "⚠️ Version was not incremented."
     
-    # Obtener el tag actual (último creado)
+    # Get the current (latest) tag
     current_tag=$(git describe --tags --abbrev=0 2>/dev/null)
     
     if [[ -n "$current_tag" ]]; then
-        # Preguntar si se desea mover el tag actual al nuevo commit
+        # Ask if the current tag should be moved to the latest commit
         echo ""
-        echo -n "🔄 El tag actual es '$current_tag'. ¿Deseas moverlo al último commit? (s/N): "
+        echo -n "🔄 The current tag is '$current_tag'. Do you want to move it to the latest commit? (y/N): "
         read -r move_tag
-        if [[ "$move_tag" == "s" ]]; then
-            echo "🔄 Moviendo el tag $current_tag al último commit..."
-            git tag -d "$current_tag" # Eliminar el tag localmente
-            git push origin --delete "$current_tag" # Eliminar el tag en remoto
-            git tag "$current_tag" # Crear el tag en el nuevo commit
-            git push origin "$current_tag" # Subir el tag actualizado
+        if [[ "$move_tag" == "y" ]]; then
+            echo "🔄 Moving tag $current_tag to the latest commit..."
+            git tag -d "$current_tag" # Delete local tag
+            git push origin --delete "$current_tag" # Delete remote tag
+            git tag "$current_tag" # Create the tag on the new commit
+            git push origin "$current_tag" # Push the updated tag
 
-            echo "✅ ¡El tag $current_tag ha sido movido al nuevo commit!"
+            echo "✅ The tag $current_tag has been moved to the latest commit!"
         else
-            echo "🚀 Sin cambios en la versión ni en los tags."
+            echo "🚀 No changes in version or tags."
         fi
     else
-        echo "⚠️ No se encontró ningún tag para mover."
+        echo "⚠️ No tag found to move."
     fi
 fi
 echo ""
 
-echo "🔄 Volviendo a la rama 'develop'..."
+echo "🔄 Switching back to 'develop' branch..."
 git switch develop
 echo ""
 
-echo "✅ ¡Proceso completado exitosamente!"
+echo "✅ Process completed successfully!"

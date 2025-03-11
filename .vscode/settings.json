@@ -1,0 +1,12 @@
+{
+    // Customize VS Code window appearance  
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#3776AB", // Python Blue
+        "titleBar.activeForeground": "#FFFFFF" // Text contrast
+    },
+    "workbench.colorTheme": "Default Dark+",
+
+    // Configure bracket pair colorization
+    "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+    "editor.guides.bracketPairs": true
+}

@@ -103,7 +103,7 @@ if [[ "$option" -ne 4 ]]; then
     new_tag="v$new_version"
 
     # Extract feature name from the second-to-last commit if it's a merge
-    third_last_commit_msg=$(git log -3 --pretty=%s | tail -1)
+    third_last_commit_msg=$(git log -3 --pretty=%s | tail 2)
     echo "$second_last_commit_msg"
     if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"

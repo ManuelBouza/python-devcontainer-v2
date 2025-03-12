@@ -98,14 +98,14 @@ if [[ "$option" -ne 4 ]]; then
 
     new_tag="v$new_version"
 
-    # Extract feature name from the last commit if it's a merge
-    latest_commit_msg=$(git log -1 --pretty=%s)
-    if [[ "$latest_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
+    # Extract feature name from the second-to-last commit if it's a merge
+    second_last_commit_msg=$(git log -2 --pretty=%s | tail -1)
+    if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"
         tag_message="🔖 Version $new_version - Feature: $feature_name"
     else
         # Ask the user for a custom message
-        echo -n "📝 The last commit message is not a feature merge. Enter a custom tag message: "
+        echo -n "📝 The second-to-last commit is not a feature merge. Enter a custom tag message: "
         read -r custom_message
         tag_message="🔖 Version $new_version - $custom_message"
     fi

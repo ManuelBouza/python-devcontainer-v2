@@ -93,8 +93,12 @@ if [[ "$option" -ne 4 ]]; then
     echo "🔼 Updating version: $current_version ➡️ $new_version"
     sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" pyproject.toml
 
+    export SKIP=prevent-commit-to-main-develop
+
     git add pyproject.toml
     git commit -m "Increment version to $new_version"
+
+    unset SKIP  # Limpiar la variable después de hacer el commit
 
     new_tag="v$new_version"
 

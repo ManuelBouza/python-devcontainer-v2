@@ -43,48 +43,49 @@ echo ""
 # Get the current version from pyproject.toml
 current_version=$(grep -oP '(?<=version = ")([0-9]+)\.([0-9]+)\.([0-9]+)' pyproject.toml)
 
+IFS='.' read -r major minor patch <<<"$current_version"
+
 echo ""
-echo -n "🔔 The current version is '$current_version'. Do you want to increment it and create a new tag?: "
-read -r increase_version
+echo "🔔 The current version is '$current_version'. Do you want to increment it and create a new tag?:"
+echo ""
+echo "📌 Select the type of increment:"
+echo "1) Major ($((major + 1)).0.0)"
+echo "2) Minor ($major.$((minor + 1)).0)"
+echo "3) Patch ($major.$minor.$((patch + 1)))"
+echo "4) No"
+echo ""
 
-    while true; do
-        # Ask which type of version increment is desired
-        echo ""
-        echo "📌 Select the type of increment:"
-        echo "1) Major ($((major + 1)).0.0)"
-        echo "2) Minor ($major.$((minor + 1)).0)"
-        echo "3) Patch ($major.$minor.$((patch + 1)))"
-        echo "4) ❌ Cancel"
-        echo ""
-        echo -n "🔢 Option (1/2/3/4): "
-        read -r option
+while true; do
+    echo -n "🔢 Option (1/2/3/4): "
+    read -r option
 
-        case $option in
-            1)
-                ((major++))
-                minor=0
-                patch=0
-                break
-                ;;
-            2)
-                ((minor++))
-                patch=0
-                break
-                ;;
-            3)
-                ((patch++))
-                break
-                ;;
-            4)
-                echo "❌ Operation canceled."
-                exit 0
-                ;;
-            *)
-                echo "⚠️ Invalid option. Please try again."
-                ;;
-        esac
-    done
+    case $option in
+        1)
+            ((major++))
+            minor=0
+            patch=0
+            break
+            ;;
+        2)
+            ((minor++))
+            patch=0
+            break
+            ;;
+        3)
+            ((patch++))
+            break
+            ;;
+        4)
+            echo "⚠️ Version was not incremented."
+            break
+            ;;
+        *)
+            echo "⚠️ Invalid option. Please try again."
+            ;;
+    esac
+done
 
+if [[ "$option" -ne 4 ]]; then
     new_version="$major.$minor.$patch"
 
     echo ""
@@ -101,34 +102,31 @@ read -r increase_version
     git push origin "$new_tag"
 
     echo "✅ New version created and published: $new_tag!"
-else
-    echo "⚠️ Version was not incremented."
-    
-    # Get the current (latest) tag
-    current_tag=$(git describe --tags --abbrev=0 2>/dev/null)
-    
-    if [[ -n "$current_tag" ]]; then
-        # Ask if the current tag should be moved to the latest commit
-        echo ""
-        echo -n "🔄 The current tag is '$current_tag'. Do you want to move it to the latest commit? (y/N): "
-        read -r move_tag
-        if [[ "$move_tag" == "y" ]]; then
-            echo "🔄 Moving tag $current_tag to the latest commit..."
-            git tag -d "$current_tag" # Delete local tag
-            git push origin --delete "$current_tag" # Delete remote tag
-            git tag "$current_tag" # Create the tag on the new commit
-            git push origin "$current_tag" # Push the updated tag
-
-            echo "✅ The tag $current_tag has been moved to the latest commit!"
-        else
-            echo "🚀 No changes in version or tags."
-        fi
-    else
-        echo "⚠️ No tag found to move."
-    fi
 fi
-echo ""
 
+# 🔄 Check and move the current tag if necessary
+current_tag=$(git describe --tags --abbrev=0 2>/dev/null)
+
+if [[ -n "$current_tag" ]]; then
+    echo ""
+    echo -n "🔄 The current tag is '$current_tag'. Do you want to move it to the latest commit? (y/N): "
+    read -r move_tag
+    if [[ "$move_tag" == "y" ]]; then
+        echo "🔄 Moving tag $current_tag to the latest commit..."
+        git tag -d "$current_tag" # Delete local tag
+        git push origin --delete "$current_tag" # Delete remote tag
+        git tag "$current_tag" # Create the tag on the new commit
+        git push origin "$current_tag" # Push the updated tag
+
+        echo "✅ The tag $current_tag has been moved to the latest commit!"
+    else
+        echo "🚀 No changes in version or tags."
+    fi
+else
+    echo "⚠️ No tag found to move."
+fi
+
+echo ""
 echo "🔄 Switching back to 'develop' branch..."
 git switch develop
 echo ""

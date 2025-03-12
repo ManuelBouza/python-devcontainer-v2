@@ -29,7 +29,8 @@
 				"mhutchie.git-graph",
 				"charliermarsh.ruff",
 				"ms-python.mypy-type-checker",
-				"gnramsay.create-python-module"
+				"gnramsay.create-python-module",
+				"redhat.vscode-yaml"
 			],
 
 			"settings": {

@@ -97,8 +97,21 @@ if [[ "$option" -ne 4 ]]; then
     git commit -m "Increment version to $new_version"
 
     new_tag="v$new_version"
-    git tag "$new_tag"
 
+    # Extract feature name from the last commit if it's a merge
+    latest_commit_msg=$(git log -1 --pretty=%s)
+    if [[ "$latest_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
+        feature_name="${BASH_REMATCH[1]}"
+        tag_message="🔖 Version $new_version - Feature: $feature_name"
+    else
+        # Ask the user for a custom message
+        echo -n "📝 The last commit message is not a feature merge. Enter a custom tag message: "
+        read -r custom_message
+        tag_message="🔖 Version $new_version - $custom_message"
+    fi
+
+    # Create and push the tag
+    git tag -a "$new_tag" -m "$tag_message"
     git push origin main
     git push origin "$new_tag"
 

@@ -23,3 +23,8 @@ per-file-ignores = { "tests/*" = ["S101"] }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.coverage.run]
+omit = [
+    "tests/*",
+]

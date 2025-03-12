@@ -16,7 +16,7 @@ select = [
     "B",  # Bug-prone patterns (Bugbear)
     "S",  # Security-related rules
     "Q",  # Quote consistency
-    "UP",  # Code modernization (Pyupgrade)
+    "UP", # Code modernization (Pyupgrade)
 ]
 
 per-file-ignores = { "tests/*" = ["S101"] }

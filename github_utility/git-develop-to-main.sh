@@ -77,6 +77,7 @@ while true; do
             ;;
         4)
             echo "⚠️ Version was not incremented."
+            no_version_change=true
             break
             ;;
         *)
@@ -104,26 +105,28 @@ if [[ "$option" -ne 4 ]]; then
     echo "✅ New version created and published: $new_tag!"
 fi
 
-# 🔄 Check and move the current tag if necessary
-current_tag=$(git describe --tags --abbrev=0 2>/dev/null)
+# 🔄 Check and move the current tag **only if the user selected option 4**
+if [[ "$no_version_change" == true ]]; then
+    current_tag=$(git describe --tags --abbrev=0 2>/dev/null)
 
-if [[ -n "$current_tag" ]]; then
-    echo ""
-    echo -n "🔄 The current tag is '$current_tag'. Do you want to move it to the latest commit? (y/N): "
-    read -r move_tag
-    if [[ "$move_tag" == "y" ]]; then
-        echo "🔄 Moving tag $current_tag to the latest commit..."
-        git tag -d "$current_tag" # Delete local tag
-        git push origin --delete "$current_tag" # Delete remote tag
-        git tag "$current_tag" # Create the tag on the new commit
-        git push origin "$current_tag" # Push the updated tag
+    if [[ -n "$current_tag" ]]; then
+        echo ""
+        echo -n "🔄 The current tag is '$current_tag'. Do you want to move it to the latest commit? (y/N): "
+        read -r move_tag
+        if [[ "$move_tag" == "y" ]]; then
+            echo "🔄 Moving tag $current_tag to the latest commit..."
+            git tag -d "$current_tag" # Delete local tag
+            git push origin --delete "$current_tag" # Delete remote tag
+            git tag "$current_tag" # Create the tag on the new commit
+            git push origin "$current_tag" # Push the updated tag
 
-        echo "✅ The tag $current_tag has been moved to the latest commit!"
+            echo "✅ The tag $current_tag has been moved to the latest commit!"
+        else
+            echo "🚀 No changes in version or tags."
+        fi
     else
-        echo "🚀 No changes in version or tags."
+        echo "⚠️ No tag found to move."
     fi
-else
-    echo "⚠️ No tag found to move."
 fi
 
 echo ""

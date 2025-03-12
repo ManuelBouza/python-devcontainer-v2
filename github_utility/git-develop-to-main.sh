@@ -104,6 +104,7 @@ if [[ "$option" -ne 4 ]]; then
 
     # Extract feature name from the second-to-last commit if it's a merge
     second_last_commit_msg=$(git log -2 --pretty=%s | tail -1)
+    echo "$second_last_commit_msg"
     if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"
         tag_message="🔖 Version $new_version - Feature: $feature_name"
@@ -112,6 +113,7 @@ if [[ "$option" -ne 4 ]]; then
         echo -n "📝 The second-to-last commit is not a feature merge. Enter a custom tag message: "
         read -r custom_message
         tag_message="🔖 Version $new_version - $custom_message"
+        echo ""
     fi
 
     # Create and push the tag

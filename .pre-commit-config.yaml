@@ -1,0 +1,46 @@
+repos:
+  # Prevent commits to main or develop
+  - repo: local
+    hooks:
+      - id: prevent-commit-to-main-develop
+        name: Prevent commits to main or develop branches
+        entry: |
+          bash -c 'branch=$(git symbolic-ref --short HEAD);
+          if [[ "$branch" =~ ^(main|develop)$ ]];
+          then echo "❌ Please create a different branch and commit there."; exit 1; fi'
+        language: system
+        stages: [pre-commit]
+
+  # Pre-commit hooks (executed in pre-commit)
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+        stages: [pre-commit]
+      - id: check-toml
+        stages: [pre-commit]
+      - id: check-yaml
+        args:
+          - --unsafe
+        stages: [pre-commit]
+
+  # Ruff for code analysis and formatting (executed in pre-commit)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.10
+    hooks:
+      - id: ruff
+        args: [--fix]
+        stages: [pre-commit]
+      - id: ruff-format
+        stages: [pre-commit]
+
+  # Pytest only runs on pre-push
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Run pytest before push
+        entry: pytest
+        language: system
+        types: [python]
+        stages: [pre-push]
+        always_run: true

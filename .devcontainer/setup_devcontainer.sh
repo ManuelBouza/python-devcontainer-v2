@@ -24,5 +24,11 @@ echo "✔️ Granting execute permission to install_python_dependencies.sh..."
 .devcontainer/install_python_dependencies.sh
 echo ""
 
+echo "🛠️ Installing and configuring pre-commit hooks..."
+chmod +x .devcontainer/install_pre-commit_hooks.sh
+echo "✔️ Granting execute permission to install_pre-commit_hooks.sh..."
+.devcontainer/install_pre-commit_hooks.sh
+echo ""
+
 echo "🎉 DevContainer setup complete!"
 echo ""

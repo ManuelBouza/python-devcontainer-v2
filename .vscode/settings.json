@@ -21,6 +21,11 @@
     },
     "editor.defaultFormatter": "charliermarsh.ruff",
 
+    // Automatically format toml files on save
+    "[toml]": {
+        "editor.defaultFormatter": "tamasfe.even-better-toml"
+    },
+
     "files.exclude": {
         "**/.ruff_cache": true,
         "**/.mypy_cache": true,
@@ -34,5 +39,5 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
 }

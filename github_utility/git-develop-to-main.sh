@@ -44,11 +44,8 @@ echo ""
 current_version=$(grep -oP '(?<=version = ")([0-9]+)\.([0-9]+)\.([0-9]+)' pyproject.toml)
 
 echo ""
-echo -n "🔔 The current version is '$current_version'. Do you want to increment it and create a new tag? (y/N): "
+echo -n "🔔 The current version is '$current_version'. Do you want to increment it and create a new tag?: "
 read -r increase_version
-
-if [[ "$increase_version" == "y" ]]; then
-    IFS='.' read -r major minor patch <<<"$current_version"
 
     while true; do
         # Ask which type of version increment is desired

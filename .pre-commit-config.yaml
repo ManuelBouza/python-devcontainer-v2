@@ -41,6 +41,7 @@ repos:
         name: Run pytest before push
         entry: pytest
         language: system
+        pass_filenames: false
         types: [python]
         stages: [pre-push]
         always_run: true

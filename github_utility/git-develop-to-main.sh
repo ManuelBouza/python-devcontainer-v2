@@ -14,14 +14,6 @@ if [[ -n $(git status --porcelain) ]]; then
     exit 1
 fi
 
-# 🛠 User confirmation before proceeding
-echo -n "🔔 Do you want to continue integrating 'develop' into 'main'? (y/N): "
-read -r continue_integration
-if [[ "$continue_integration" != "" && "$continue_integration" != "y" ]]; then
-    echo "⚠️ Operation canceled by the user. Exiting..."
-    exit 1
-fi
-
 echo "🔄 Switching to 'main' branch..."
 git switch main
 echo ""

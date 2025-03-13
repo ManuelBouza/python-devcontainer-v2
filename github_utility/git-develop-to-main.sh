@@ -83,45 +83,54 @@ if [[ "$option" -ne 4 ]]; then
 
     echo ""
     echo "🔼 Updating version: $current_version ➡️ $new_version"
+
+    # Update the version in pyproject.toml
     sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" pyproject.toml
 
-    # Set the SKIP variable to prevent commit restrictions for main and develop branches
+    # 🚫 Temporarily disable commit restrictions for main and develop branches
     export SKIP=prevent-commit-to-main-develop
-    
+
+    # 📌 Stage and commit the version update
     git add pyproject.toml
     git commit -m "Increment version to $new_version"
-    
-    # Unset the SKIP variable to restore commit restrictions
+    echo ""
+
+    # ✅ Restore commit restrictions after this commit
     unset SKIP
 
+    # Define the new version tag
     new_tag="v$new_version"
 
-    # Get the last 3 commits, then extract only the 3rd one
+    # 🔍 Get the third-to-last commit message
     second_last_commit_msg=$(git log -3 --pretty=%s | tail -n 1)
-    read -r -p "Press Enter to continue..."
 
+    # 🎯 Check if the commit is a feature merge
     if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"
         tag_message="🔖 Version $new_version - Feature: $feature_name"
+        echo "$tag_message"
         echo ""
     else
-        # Ask the user for a custom message
+        # 📝 Ask for a custom tag message if it's not a feature merge
         echo ""
         echo -n "📝 The second-to-last commit is not a feature merge. Enter a custom tag message: "
         read -r custom_message
         tag_message="🔖 Version $new_version - $custom_message"
+        echo "$tag_message"
         echo ""
     fi
     echo ""
 
-    # Create and push the tag
+    # 🏷️ Create and push the new tag
+    echo "🚀 Creating a new tag..."
     git tag -a "$new_tag" -m "$tag_message"
     git push origin main --no-verify
     git push origin "$new_tag" --no-verify
 
-    echo "✅ New version created and published: $new_tag!"
+    echo "✅ New version created and published: $new_tag! 🎉"
     echo ""
 fi
+
 
 # 🔄 Check and move the current tag **only if the user selected option 4**
 if [[ "$no_version_change" == true ]]; then

@@ -102,8 +102,9 @@ if [[ "$option" -ne 4 ]]; then
 
     new_tag="v$new_version"
 
-    # Extract feature name from the second-to-last commit if it's a merge
-    fourth_last_commit_msg=$(git log -4 --pretty=%s | tail -1)
+    # Get the last 3 commits, then extract only the 3rd one
+    third_commit_msg=$(git log -3 --pretty=%s | sed -n '3p')
+
     echo "$second_last_commit_msg"
     if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"
@@ -125,6 +126,7 @@ if [[ "$option" -ne 4 ]]; then
     git push origin "$new_tag"
 
     echo "✅ New version created and published: $new_tag!"
+    echo ""
 fi
 
 # 🔄 Check and move the current tag **only if the user selected option 4**

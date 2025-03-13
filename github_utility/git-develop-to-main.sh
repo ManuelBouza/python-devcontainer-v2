@@ -98,6 +98,8 @@ if [[ "$option" -ne 4 ]]; then
 
     # Get the last 3 commits, then extract only the 3rd one
     second_last_commit_msg=$(git log -3 --pretty=%s | tail -n 1)
+    read -r -p "Press Enter to continue..."
+
     if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"
         tag_message="🔖 Version $new_version - Feature: $feature_name"

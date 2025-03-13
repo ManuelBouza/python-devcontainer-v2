@@ -85,17 +85,19 @@ if [[ "$option" -ne 4 ]]; then
     echo "🔼 Updating version: $current_version ➡️ $new_version"
     sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" pyproject.toml
 
+    # Set the SKIP variable to prevent commit restrictions for main and develop branches
     export SKIP=prevent-commit-to-main-develop
-
+    
     git add pyproject.toml
     git commit -m "Increment version to $new_version"
-
-    unset SKIP  # Limpiar la variable después de hacer el commit
+    
+    # Unset the SKIP variable to restore commit restrictions
+    unset SKIP
 
     new_tag="v$new_version"
 
     # Get the last 3 commits, then extract only the 3rd one
-    second_last_commit_msg = git log -3 --pretty=%s | tail -n 1
+    second_last_commit_msg=$(git log -3 --pretty=%s | tail -n 1)
     if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"
         tag_message="🔖 Version $new_version - Feature: $feature_name"

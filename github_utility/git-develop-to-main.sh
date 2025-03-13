@@ -95,7 +95,7 @@ if [[ "$option" -ne 4 ]]; then
     new_tag="v$new_version"
 
     # Get the last 3 commits, then extract only the 3rd one
-    git log -3 --pretty=%s | tail -n 1
+    second_last_commit_msg = git log -3 --pretty=%s | tail -n 1
     if [[ "$second_last_commit_msg" =~ Merge\ \'feature\/([^\']+)\'\ into\ develop ]]; then
         feature_name="${BASH_REMATCH[1]}"
         tag_message="🔖 Version $new_version - Feature: $feature_name"

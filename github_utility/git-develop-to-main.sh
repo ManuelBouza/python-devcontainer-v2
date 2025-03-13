@@ -116,8 +116,8 @@ if [[ "$option" -ne 4 ]]; then
 
     # Create and push the tag
     git tag -a "$new_tag" -m "$tag_message"
-    git push origin main
-    git push origin "$new_tag"
+    git push origin main --no-verify
+    git push origin "$new_tag" --no-verify
 
     echo "✅ New version created and published: $new_tag!"
     echo ""

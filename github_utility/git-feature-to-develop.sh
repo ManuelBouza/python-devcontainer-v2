@@ -14,15 +14,6 @@ if [[ -n $(git status --porcelain) ]]; then
     exit 1
 fi
 
-# 🛠 User confirmation before proceeding
-echo -n "🔔 Do you want to continue integrating the branch '$current_branch'? (y/N): "
-read -r continue_integration
-if [[ "$continue_integration" != "" && "$continue_integration" != "y" ]]; then
-    echo "⚠️ Operation canceled by the user. Exiting..."
-    exit 1
-fi
-echo ""
-
 # 🛠 Extracting the feature branch name
 current_branch=$(git branch --show-current)
 feature_name=${current_branch#feature/}
